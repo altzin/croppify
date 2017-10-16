@@ -26,7 +26,7 @@ class Resizer:
 
 
     def resize(self,directory):
-
+        #cut so every image is as big as the smallest image.
         template_x = self.smallestPicture[0]
         template_y = self.smallestPicture[1]
 
