@@ -1,8 +1,6 @@
 from PIL import Image
 import os
 
-#C:\Users\altzi\Desktop\testmapp\profilbilder
-
 class Resizer:
 
     def __init__(self,pictureArray,filePath):
@@ -35,8 +33,6 @@ class Resizer:
         #create directory to add new images to
         directory += "\\cropped"
 
-        lengthOfPath = len(directory)
-
         if not os.path.exists(directory):
             os.makedirs(directory)
 
@@ -45,9 +41,12 @@ class Resizer:
 
             start_x = int((currentImage.width - template_x) / 2)
             start_y = int((currentImage.height - template_y) / 2)
+            # vill man flytta mallen uppåt minska detta värde^
 
-            cropped = currentImage.crop((start_x,start_y,start_x + template_x,start_y + template_y))
-            cropped.save(directory+ "\\cropped-" + self.listOfPictures[i][:-4] + ".jpg")
+            bbox = (start_x,start_y, (start_x + template_x), (start_y + template_y))
+
+            cropped = currentImage.crop(bbox)
+            cropped.save(directory + "\\cropped-" + self.listOfPictures[i][:-4] + ".jpg")
 
 def main():
 
