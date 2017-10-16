@@ -1,15 +1,16 @@
 from PIL import Image
 import os
-import filehandler
 
 #C:\Users\altzi\Desktop\testmapp\profilbilder
 
 class Resizer:
 
-    def __init__(self,pictureArray):
+    def __init__(self,pictureArray,filePath):
         self.listOfPictures = pictureArray
+        self.filePath = filePath
+
         self.smallestPicture = self.findTemplate(self.listOfPictures)
-        self.filepath = ""
+
 
     def findTemplate(self,pictureList):
         #returns a values for the biggest template that fits inside every picture
@@ -18,7 +19,8 @@ class Resizer:
         current_min_y = 10000
 
         for image in pictureList:
-            currentimg = Image.open(image)
+
+            currentimg = Image.open(self.filePath + "\\" + image)
             current_min_x = min(currentimg.width, current_min_x)
             current_min_y = min(currentimg.height, current_min_y)
 
@@ -39,38 +41,28 @@ class Resizer:
             os.makedirs(directory)
 
         for i in range(len(self.listOfPictures)):
-            currentImage = Image.open(self.listOfPictures[i])
+            currentImage = Image.open(self.filePath + "\\" + self.listOfPictures[i])
 
             start_x = int((currentImage.width - template_x) / 2)
             start_y = int((currentImage.height - template_y) / 2)
 
             cropped = currentImage.crop((start_x,start_y,start_x + template_x,start_y + template_y))
-            print(start_x, start_y, template_x, template_y)
-            cropped.save(directory+"\\" + str(i) +".jpg")
+            cropped.save(directory+ "\\cropped-" + self.listOfPictures[i][:-4] + ".jpg")
 
 def main():
-    #ANVÄNDA THUMBNAIL FRÅN IMAGE.PIL?
 
     while True:
-        print("Give me a filepath to a set of images with varying sizes:")
-        try:
-            filePath = input()
+        filePath = input("Give me a filepath to a set of images with varying sizes:")
 
-            imagesFromFile = [filePath + "\\" + individualPic for individualPic in os.listdir(filePath)]
+        try:
+            listOfPictures = [individualPic for individualPic in os.listdir(filePath)]
             break
         except Exception:
             print("Bad File")
 
-    listOfPictures = imagesFromFile
-
-    resizer = Resizer(listOfPictures)
-
+    resizer = Resizer(listOfPictures,filePath)
 
     resizer.resize(filePath)
-
-
-
-
 
 if __name__=="__main__":
     main()
